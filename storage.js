@@ -85,7 +85,97 @@ const StorageManager = {
   },
 
   /**
-   * Clears the titles database and resets the last import date.
+   * Fetches all visited URLs.
+   * @returns {Promise<string[]>}
+   */
+  getVisitedUrls() {
+    return new Promise((resolve) => {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get({ visitedUrls: [] }, (result) => {
+          resolve(result.visitedUrls || []);
+        });
+      } else {
+        const urls = localStorage.getItem('linkmemory_visited_urls');
+        resolve(urls ? JSON.parse(urls) : []);
+      }
+    });
+  },
+
+  /**
+   * Saves both a visited URL and a cleaned title in a single transaction.
+   * @param {string} url 
+   * @param {string} title 
+   * @returns {Promise<void>}
+   */
+  savePageVisit(url, title) {
+    return new Promise(async (resolve) => {
+      const existingTitles = await this.getTitles();
+      const existingUrls = await this.getVisitedUrls();
+      
+      let updated = false;
+      
+      // 1. Save URL if not duplicate
+      if (url && typeof url === 'string') {
+        const trimmedUrl = url.trim();
+        const normUrlFunc = (u) => {
+          if (!u) return '';
+          let c = u.trim().toLowerCase();
+          if (c.endsWith('/')) c = c.slice(0, -1);
+          const h = c.indexOf('#');
+          if (h > -1) c = c.substring(0, h);
+          return c;
+        };
+        const normUrl = normUrlFunc(trimmedUrl);
+        if (normUrl) {
+          const urlSet = new Set(existingUrls.map(u => normUrlFunc(u)));
+          if (!urlSet.has(normUrl)) {
+            existingUrls.push(trimmedUrl);
+            updated = true;
+          }
+        }
+      }
+      
+      // 2. Save Title if not duplicate
+      if (title && typeof title === 'string') {
+        const trimmedTitle = title.trim();
+        const normTitleFunc = (t) => {
+          if (!t) return '';
+          return t.toLowerCase().trim().replace(/\s+/g, ' ');
+        };
+        const normTitle = normTitleFunc(trimmedTitle);
+        if (normTitle) {
+          const titleSet = new Set(existingTitles.map(t => normTitleFunc(t)));
+          if (!titleSet.has(normTitle)) {
+            existingTitles.push(trimmedTitle);
+            updated = true;
+          }
+        }
+      }
+      
+      if (updated) {
+        const lastImportDate = new Date().toISOString();
+        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.set({
+            titles: existingTitles,
+            visitedUrls: existingUrls,
+            lastImportDate: lastImportDate
+          }, () => {
+            resolve();
+          });
+        } else {
+          localStorage.setItem('linkmemory_titles', JSON.stringify(existingTitles));
+          localStorage.setItem('linkmemory_visited_urls', JSON.stringify(existingUrls));
+          localStorage.setItem('linkmemory_last_import', lastImportDate);
+          resolve();
+        }
+      } else {
+        resolve();
+      }
+    });
+  },
+
+  /**
+   * Clears the titles and visited URLs databases and resets the last import date.
    * @returns {Promise<void>}
    */
   clearDatabase() {
@@ -93,12 +183,14 @@ const StorageManager = {
       if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
         chrome.storage.local.set({
           titles: [],
+          visitedUrls: [],
           lastImportDate: null
         }, () => {
           resolve();
         });
       } else {
         localStorage.removeItem('linkmemory_titles');
+        localStorage.removeItem('linkmemory_visited_urls');
         localStorage.removeItem('linkmemory_last_import');
         resolve();
       }

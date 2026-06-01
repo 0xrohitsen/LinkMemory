@@ -6,6 +6,7 @@
 
 // In-memory lookup state
 let seenTitlesSet = new Set();
+let visitedUrlsSet = new Set();
 let isEnabled = true;
 let siteScope = 'all';
 let whitelistedDomains = [];
@@ -52,16 +53,16 @@ function recordPageVisit() {
       if (!isDomainMatched(currentHost, whitelistedDomains)) return;
     }
 
+    const currentUrl = window.location.href;
+    if (!currentUrl || !currentUrl.startsWith('http')) return;
+
     // Capture and clean document title
     const rawTitle = document.title || '';
-    if (!rawTitle) return;
-
     const clean = typeof cleanTitle === 'function' ? cleanTitle(rawTitle) : rawTitle.trim();
-    if (!clean) return;
 
     // Direct save via storage helper
-    if (typeof StorageManager !== 'undefined' && StorageManager.saveTitles) {
-      StorageManager.saveTitles([clean]).then(() => {
+    if (typeof StorageManager !== 'undefined' && StorageManager.savePageVisit) {
+      StorageManager.savePageVisit(currentUrl, clean).then(() => {
         // Reload settings and re-scan page elements to apply badges instantly
         loadSettingsAndScan();
       });
@@ -85,6 +86,7 @@ function loadSettingsAndScan() {
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.storage && chrome.storage.local) {
     chrome.storage.local.get({
       titles: [],
+      visitedUrls: [],
       enabled: true,
       scope: 'all',
       selectedDomains: []
@@ -93,6 +95,7 @@ function loadSettingsAndScan() {
       siteScope = result.scope || 'all';
       whitelistedDomains = result.selectedDomains || [];
       const titles = result.titles || [];
+      const visited = result.visitedUrls || [];
 
       // 1. If disabled, clean up any existing badges and stop
       if (!isEnabled) {
@@ -110,8 +113,9 @@ function loadSettingsAndScan() {
         }
       }
 
-      // 3. Convert to efficient O(1) Set
+      // 3. Convert to efficient O(1) Sets
       seenTitlesSet = new Set(titles.map(t => normalizeTitle(t)));
+      visitedUrlsSet = new Set(visited.map(u => normalizeUrl(u)));
 
       // 4. Perform elements scanning
       scanPage();
@@ -123,7 +127,7 @@ function loadSettingsAndScan() {
  * Scans DOM headers and anchors for matching titles, injecting badges.
  */
 function scanPage() {
-  if (!isEnabled || seenTitlesSet.size === 0) return;
+  if (!isEnabled || (seenTitlesSet.size === 0 && visitedUrlsSet.size === 0)) return;
 
   // Evaluate if current site fits whitelist scope
   if (siteScope === 'selected') {
@@ -154,7 +158,20 @@ function scanPage() {
       return;
     }
 
-    if (seenTitlesSet.has(normalizedTitle)) {
+    // Extract URL link details if parent anchor exists
+    let urlVal = '';
+    if (element.tagName === 'A') {
+      urlVal = element.href;
+    } else {
+      const closestLink = element.closest('a');
+      if (closestLink) urlVal = closestLink.href;
+    }
+
+    const normUrl = urlVal ? normalizeUrl(urlVal) : '';
+    const isVisitedUrl = normUrl ? visitedUrlsSet.has(normUrl) : false;
+    const isSeenTitle = normalizedTitle ? seenTitlesSet.has(normalizedTitle) : false;
+
+    if (isSeenTitle || isVisitedUrl) {
       // Prevent redundant badges on nested trees
       if (element.closest('[data-linkmemory-status]')) return;
       if (element.querySelector('[data-linkmemory-status]')) return;

@@ -86,7 +86,25 @@ function cleanTitle(title) {
   return clean.trim();
 }
 
+function normalizeUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  let clean = url.trim().toLowerCase();
+  
+  // Strip trailing slashes
+  if (clean.endsWith('/')) {
+    clean = clean.slice(0, -1);
+  }
+  
+  // Ignore hashes for link comparison
+  const hashIdx = clean.indexOf('#');
+  if (hashIdx > -1) {
+    clean = clean.substring(0, hashIdx);
+  }
+  
+  return clean;
+}
+
 // Export for ES modules or attach to global scope if loaded as a script
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { normalizeTitle, formatBytes, formatDate, cleanTitle };
+  module.exports = { normalizeTitle, formatBytes, formatDate, cleanTitle, normalizeUrl };
 }
