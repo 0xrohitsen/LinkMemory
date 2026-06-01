@@ -131,8 +131,8 @@ function scanPage() {
     if (!isDomainMatched(currentHost, whitelistedDomains)) return;
   }
 
-  // Retrieve unscanned headers and anchor elements
-  const selector = 'a:not([data-linkmemory-checked]), h1:not([data-linkmemory-checked]), h2:not([data-linkmemory-checked]), h3:not([data-linkmemory-checked]), h4:not([data-linkmemory-checked]), h5:not([data-linkmemory-checked]), h6:not([data-linkmemory-checked])';
+  // Retrieve unscanned headers, anchor, span, p, and div elements
+  const selector = 'a:not([data-linkmemory-checked]), h1:not([data-linkmemory-checked]), h2:not([data-linkmemory-checked]), h3:not([data-linkmemory-checked]), h4:not([data-linkmemory-checked]), h5:not([data-linkmemory-checked]), h6:not([data-linkmemory-checked]), span:not([data-linkmemory-checked]), p:not([data-linkmemory-checked]), div:not([data-linkmemory-checked])';
   const elements = document.querySelectorAll(selector);
 
   if (elements.length === 0) return;
@@ -143,7 +143,9 @@ function scanPage() {
 
     // Extract text content and normalize
     const text = (element.innerText || element.textContent || '').trim();
-    if (!text) return;
+    
+    // Fast O(1) bounds check to skip layout containers or tiny words
+    if (text.length < 8 || text.length > 180) return;
     
     const normalizedTitle = normalizeTitle(text);
 
@@ -243,6 +245,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ status: 'completed' });
   }
   return true;
+});
+
+// Monitor bfcache (Back-Forward Cache) transitions
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    cleanupBadging();
+    loadSettingsAndScan();
+  }
 });
 
 // Launch content scripts
