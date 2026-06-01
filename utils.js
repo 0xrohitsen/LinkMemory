@@ -1,5 +1,5 @@
 /**
- * Utility functions for the ARC Content History Tracker
+ * LinkMemory V4 - Utility Functions
  */
 
 /**
@@ -15,31 +15,6 @@ function normalizeTitle(title) {
     .toLowerCase()
     .trim()
     .replace(/\s+/g, ' ');
-}
-
-/**
- * Normalizes a URL for exact matching.
- * Trims whitespace, converts to lowercase, strips trailing slashes, and ignores hashes.
- * 
- * @param {string} url 
- * @returns {string} Normalized URL
- */
-function normalizeUrl(url) {
-  if (!url || typeof url !== 'string') return '';
-  let clean = url.trim().toLowerCase();
-  
-  // Strip trailing slashes
-  if (clean.endsWith('/')) {
-    clean = clean.slice(0, -1);
-  }
-  
-  // Ignore hashes for link comparison
-  const hashIdx = clean.indexOf('#');
-  if (hashIdx > -1) {
-    clean = clean.substring(0, hashIdx);
-  }
-  
-  return clean;
 }
 
 /**
@@ -85,51 +60,7 @@ function formatDate(dateVal) {
   }
 }
 
-/**
- * Strips common website name separators and suffixes from document titles.
- * E.g., "Circle's Post-Quantum Security Roadmap... | Arc House" becomes
- * "Circle's Post-Quantum Security Roadmap..."
- * Evaluates trailing ends specifically to avoid truncating internal title dashes.
- * 
- * @param {string} title 
- * @returns {string} Stripped clean title
- */
-function cleanTitle(title) {
-  if (!title || typeof title !== 'string') return '';
-  let clean = title.trim();
-  
-  // Specific brand-name suffixes near the trailing end of the document title
-  const suffixes = [
-    ' - video',
-    ' - discussion',
-    ' - blog',
-    ' - post',
-    ' | arc house',
-    ' - arc house',
-    ' — arc house'
-  ];
-  
-  const cleanLower = clean.toLowerCase();
-  for (const suffix of suffixes) {
-    if (cleanLower.endsWith(suffix)) {
-      clean = clean.substring(0, clean.length - suffix.length).trim();
-      break; // Remove at most one standard trailing brand suffix
-    }
-  }
-  
-  // Fallback: strip generic pipe separators if they are near the end (branding)
-  const pipeIdx = clean.lastIndexOf(' | ');
-  if (pipeIdx > -1 && pipeIdx > clean.length - 28) {
-    clean = clean.substring(0, pipeIdx).trim();
-  }
-  
-  // Strip trailing spaces and secondary quotes if necessary
-  return clean.trim();
-}
-
 // Export for ES modules or attach to global scope if loaded as a script
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { normalizeTitle, normalizeUrl, formatBytes, formatDate, cleanTitle };
+  module.exports = { normalizeTitle, formatBytes, formatDate };
 }
-
-

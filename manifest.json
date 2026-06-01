@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LinkMemory",
-  "version": "1.0.0",
-  "description": "Instantly identifies previously read ARC articles, highlights matching titles, and adds SEEN badges.",
+  "version": "4.0.0",
+  "description": "Universal content memory extension that remembers titles you have already seen and marks them across any website.",
   "permissions": [
     "storage",
     "unlimitedStorage"
@@ -13,6 +13,10 @@
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "settings.html",
+    "open_in_tab": true
   },
   "content_scripts": [
     {

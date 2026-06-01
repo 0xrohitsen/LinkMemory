@@ -19,104 +19,72 @@
         <img class="logo-img" src="icons/icon48.png" alt="LinkMemory Logo">
         <h1>Link<span>Memory</span></h1>
       </div>
-      <div class="app-badge">v2.0.0</div>
+      <div class="app-badge">v4.0.0</div>
     </header>
+
+    <!-- General Settings global switch -->
+    <section class="hiding-settings-section" style="padding: 12px; margin-bottom: 12px;">
+      <div class="hiding-toggle-row" style="border-bottom: none; padding-bottom: 0;">
+        <span class="toggle-label" style="font-size: 13px;">Enable LinkMemory</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-enabled" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </section>
 
     <!-- Stats Dashboard -->
     <section class="dashboard-section">
       <div class="stats-grid">
-        <div class="stat-card green">
-          <span class="stat-label">Visited URLs</span>
-          <span class="stat-value" id="stat-visited-count">0</span>
+        <div class="stat-card green" style="border-color: rgba(34, 197, 94, 0.2);">
+          <span class="stat-label">Total Titles</span>
+          <span class="stat-value" id="stat-total-count">0</span>
         </div>
-        <div class="stat-card red">
-          <span class="stat-label">Imported Titles</span>
-          <span class="stat-value" id="stat-imported-count">0</span>
-        </div>
-        <div class="stat-card green-active">
-          <span class="stat-label">Visited on Page</span>
-          <span class="stat-value" id="stat-visited-page-count">0</span>
-        </div>
-        <div class="stat-card red-active">
-          <span class="stat-label">Seen on Page</span>
-          <span class="stat-value" id="stat-seen-count">0</span>
+        <div class="stat-card red" style="border-color: rgba(255, 59, 48, 0.2);">
+          <span class="stat-label">Matched On Page</span>
+          <span class="stat-value" id="stat-matched-page-count">0</span>
         </div>
       </div>
       
       <!-- Meta Information -->
-      <div class="meta-row">
+      <div class="meta-row" style="margin-bottom: 8px;">
         <div class="meta-item">
-          <span>DB Size: </span><strong id="stat-db-size">0 KB</strong>
+          <span>Database Size: </span><strong id="stat-db-size">0 KB</strong>
         </div>
         <div class="meta-item">
-          <span>Last Import: </span><strong id="stat-last-import">Never</strong>
-        </div>
-      </div>
-    </section>
-
-    <!-- Hiding & Exceptions Panel -->
-    <section class="hiding-settings-section">
-      <div class="hiding-toggle-row">
-        <span class="toggle-label">Hide Visited Articles</span>
-        <label class="switch">
-          <input type="checkbox" id="toggle-hide-visited" checked>
-          <span class="slider round"></span>
-        </label>
-      </div>
-
-      <div class="exceptions-container">
-        <div class="exceptions-header-row">
-          <span class="exceptions-title">Exceptions (Don't Hide)</span>
-          <button class="btn btn-secondary btn-xs" id="btn-exclude-current">
-            + Exclude Current Page
-          </button>
-        </div>
-
-        <div class="exceptions-add-row">
-          <input type="text" id="exceptions-input" placeholder="Enter path or URL (e.g. blog.arc.xyz)">
-          <button class="btn btn-primary btn-xs" id="btn-add-exception">Add</button>
-        </div>
-
-        <div class="exceptions-list" id="exceptions-list">
-          <!-- Rendered dynamically -->
+          <span>Scope Status: </span><strong id="stat-scope-status" style="color: var(--accent-green);">All Websites</strong>
         </div>
       </div>
     </section>
 
     <!-- Actions Section -->
     <section class="actions-section">
-      <!-- Titles CSV Controls Group -->
+      <!-- Database controls group -->
       <div class="db-group">
-        <div class="db-group-title">Import / Export Titles</div>
+        <div class="db-group-title">Title Database Manager</div>
         <div class="action-row">
-          <label class="btn btn-primary btn-sm" for="csv-file-input" id="import-titles-label" style="cursor: pointer;">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Import CSV
-          </label>
-          <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
-          
-          <button class="btn btn-secondary btn-sm" id="btn-toggle-bulk-paste">
+          <button class="btn btn-secondary btn-sm" id="btn-toggle-bulk-paste" style="flex: 1;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
             Paste Titles
           </button>
           
-          <button class="btn btn-secondary btn-sm" id="btn-export">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export CSV
+          <button class="btn btn-secondary btn-sm" id="btn-open-settings" style="flex: 1;">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Full Settings
           </button>
         </div>
         
         <!-- Bulk Paste Area -->
-        <div class="bulk-paste-container" id="bulk-paste-container" style="display: none;">
+        <div class="bulk-paste-container" id="bulk-paste-container" style="display: none; margin-top: 8px;">
           <textarea id="bulk-paste-textarea" placeholder="Paste article titles here (one per line)..."></textarea>
           <div class="bulk-paste-actions">
-            <button class="btn btn-primary btn-xs" id="btn-import-bulk-paste">Import Pasted Titles</button>
+            <button class="btn btn-green btn-xs" id="btn-import-bulk-paste">Import Titles</button>
             <button class="btn btn-secondary btn-xs" id="btn-clear-bulk-paste">Clear</button>
           </div>
         </div>
         
         <!-- Title Import Progress -->
-        <div class="import-progress-container" id="import-progress-titles" style="display: none;">
+        <div class="import-progress-container" id="import-progress-titles" style="display: none; margin-top: 8px;">
           <div class="progress-bar-track">
             <div class="progress-bar-fill" id="progress-fill-titles" style="width: 0%;"></div>
           </div>
@@ -126,88 +94,23 @@
           </div>
         </div>
       </div>
-
-      <!-- URLs CSV Controls Group -->
-      <div class="db-group">
-        <div class="db-group-title">Import / Export URLs</div>
-        <div class="action-row">
-          <label class="btn btn-green btn-sm" for="csv-url-file-input" id="import-urls-label" style="cursor: pointer;">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Import URLs
-          </label>
-          <input type="file" id="csv-url-file-input" accept=".csv" style="display: none;">
-          <button class="btn btn-secondary btn-sm" id="btn-export-urls">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export URLs
-          </button>
-        </div>
-        <!-- URL Import Progress -->
-        <div class="import-progress-container url-progress" id="import-progress-urls" style="display: none;">
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="progress-fill-urls" style="width: 0%;"></div>
-          </div>
-          <div class="progress-status-row">
-            <span class="progress-status-text" id="progress-status-urls">Ready</span>
-            <span class="progress-status-pct" id="progress-pct-urls">0%</span>
-          </div>
-        </div>
-      </div>
       
       <!-- Feedback Messages -->
       <div class="feedback-toast" id="feedback-message"></div>
     </section>
 
-    <!-- Search Section -->
-    <section class="search-section">
-      <div class="search-box">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="search-input" placeholder="Search Title or URL...">
-        <button id="search-clear-btn" class="search-clear-btn" style="display: none;">&times;</button>
+    <!-- Footer build brand -->
+    <footer class="app-footer" style="flex-direction: column; gap: 8px; align-items: center; justify-content: center; padding-top: 8px; margin-top: 4px;">
+      <div style="font-size: 11px; color: var(--text-muted);">
+        Build By <a href="https://x.com/ask_rohitsen" target="_blank" style="color: var(--accent-green); text-decoration: none; font-weight: 600;">@ask_rohitsen</a>
       </div>
-      
-      <!-- Search Results Area -->
-      <div class="search-results-container">
-        <div class="search-results-header" id="results-count-label" style="display: none;">
-          Found 0 matches
-        </div>
-        <div class="search-results-list" id="search-results-list">
-          <div class="search-empty-state">
-            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <p>Search results will display matches in titles or URLs.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bottom Controls Area -->
-    <footer class="app-footer">
-      <button class="btn-clear" id="btn-clear-db">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-        Clear Database
-      </button>
     </footer>
-
-    <!-- Custom Premium Confirmation Modal -->
-    <div class="modal-overlay" id="confirm-modal">
-      <div class="modal-box">
-        <div class="modal-warning-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        </div>
-        <h2>Clear Database?</h2>
-        <p>This will erase all imported article titles and visited URL history. This action is irreversible.</p>
-        <div class="modal-buttons">
-          <button class="btn btn-secondary modal-btn" id="modal-btn-cancel">Cancel</button>
-          <button class="btn btn-danger modal-btn" id="modal-btn-confirm">Clear All</button>
-        </div>
-      </div>
-    </div>
 
   </div>
 
   <!-- Loading Scripts -->
   <script src="utils.js"></script>
   <script src="storage.js"></script>
-  <script src="csv-import.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
