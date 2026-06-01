@@ -12,11 +12,14 @@ Whether you are browsing feeds on Medium, Substack, Hashnode, Dev.to, forums, or
 
 ## 🚀 Quick Download
 
-Get the extension instantly and run it locally:
+Get the extension instantly for your device:
 
 <p align="center">
-  <a href="https://github.com/0xrohitsen/LinkMemory/archive/refs/heads/main.zip" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/Download-LinkMemory%20ZIP-22c55e?style=for-the-badge&logo=github" alt="Download LinkMemory ZIP">
+  <a href="https://github.com/0xrohitsen/LinkMemory/archive/refs/heads/main.zip" style="text-decoration: none; margin: 0 10px;">
+    <img src="https://img.shields.io/badge/Download-Desktop%20ZIP-22c55e?style=for-the-badge&logo=github" alt="Download Desktop ZIP">
+  </a>
+  <a href="https://github.com/0xrohitsen/LinkMemory/raw/main/Download/LinkMemory-main.crx" style="text-decoration: none; margin: 0 10px;">
+    <img src="https://img.shields.io/badge/Download-Mobile%20.CRX-3b82f6?style=for-the-badge&logo=android" alt="Download Mobile CRX">
   </a>
 </p>
 
@@ -85,14 +88,20 @@ LinkMemory/
 6. **Done!** Pin the extension to your toolbar.
 
 ### 📱 On Mobile (Kiwi Browser, Mises Browser)
-1. **Download** the ZIP:
-   * Open Kiwi/Mises on your Android device and download the [LinkMemory ZIP](https://github.com/0xrohitsen/LinkMemory/archive/refs/heads/main.zip).
-2. Open Extensions:
-   * Tap the three dots menu and select **Extensions**.
-3. Toggle **"Developer Mode"** to **ON**.
-4. Tap **"+ (from .zip/.crx/.user.js)"**.
-5. Select the downloaded ZIP file from your device files.
-6. LinkMemory will load instantly and works natively on mobile blogs and feeds!
+
+> [!IMPORTANT]
+> To prevent Android Scoped Storage sweeping issues (which can cause transient crashes or directory read errors with unpacked `.zip` files), mobile users should **always** use the pre-packaged `.crx` extension file.
+
+1. **Download the Mobile Extension File**:
+   * Download the [LinkMemory Mobile .CRX File](https://github.com/0xrohitsen/LinkMemory/raw/main/Download/LinkMemory-main.crx) directly to your Android device.
+2. **Open Extensions Page**:
+   * In Kiwi or Mises browser, tap the three-dots menu and select **Extensions**.
+3. **Enable Developer Mode**:
+   * Toggle **"Developer Mode"** to **ON**.
+4. **Install CRX**:
+   * Tap **"+ (from .zip/.crx/.user.js)"**.
+   * Locate and select the downloaded `LinkMemory-main.crx` file from your device's Downloads folder.
+5. **Done!** LinkMemory will load instantly and run securely offline.
 
 ---
 
