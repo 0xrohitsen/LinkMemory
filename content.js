@@ -29,9 +29,51 @@ function isDomainMatched(currentHost, domainsList) {
 }
 
 /**
+ * Automatically captures current page title, cleans it of generic brand suffixes,
+ * and saves it into local titles storage as seen history.
+ */
+function recordPageVisit() {
+  if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) return;
+  
+  chrome.storage.local.get({
+    enabled: true,
+    scope: 'all',
+    selectedDomains: []
+  }, (result) => {
+    const isEnabled = result.enabled !== false;
+    const siteScope = result.scope || 'all';
+    const whitelistedDomains = result.selectedDomains || [];
+
+    if (!isEnabled) return;
+
+    // Check scope whitelist
+    const currentHost = window.location.hostname;
+    if (siteScope === 'selected') {
+      if (!isDomainMatched(currentHost, whitelistedDomains)) return;
+    }
+
+    // Capture and clean document title
+    const rawTitle = document.title || '';
+    if (!rawTitle) return;
+
+    const clean = typeof cleanTitle === 'function' ? cleanTitle(rawTitle) : rawTitle.trim();
+    if (!clean) return;
+
+    // Direct save via storage helper
+    if (typeof StorageManager !== 'undefined' && StorageManager.saveTitles) {
+      StorageManager.saveTitles([clean]).then(() => {
+        // Reload settings and re-scan page elements to apply badges instantly
+        loadSettingsAndScan();
+      });
+    }
+  });
+}
+
+/**
  * Main initializer
  */
 function init() {
+  recordPageVisit();
   loadSettingsAndScan();
   setupMutationObserver();
 }
@@ -170,6 +212,8 @@ function setupMutationObserver() {
     if (window.location.href !== lastObservedUrl) {
       lastObservedUrl = window.location.href;
       cleanupBadging();
+      // Deferred record to capture updated document.title from the SPA
+      setTimeout(recordPageVisit, 500);
       loadSettingsAndScan();
       return;
     }

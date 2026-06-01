@@ -60,7 +60,33 @@ function formatDate(dateVal) {
   }
 }
 
+/**
+ * Strips common website name branding separators and suffixes from document titles.
+ * E.g., "Universal History Syncing | Medium" becomes "Universal History Syncing"
+ * 
+ * @param {string} title 
+ * @returns {string} Stripped clean title
+ */
+function cleanTitle(title) {
+  if (!title || typeof title !== 'string') return '';
+  let clean = title.trim();
+  
+  // Generic separators
+  const separators = [' | ', ' - ', ' — '];
+  
+  for (const sep of separators) {
+    const idx = clean.lastIndexOf(sep);
+    // Only strip branding if it resides near the trailing end of the title (branding site names)
+    if (idx > -1 && idx > clean.length - 35) {
+      clean = clean.substring(0, idx).trim();
+      break;
+    }
+  }
+  
+  return clean.trim();
+}
+
 // Export for ES modules or attach to global scope if loaded as a script
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { normalizeTitle, formatBytes, formatDate };
+  module.exports = { normalizeTitle, formatBytes, formatDate, cleanTitle };
 }
