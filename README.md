@@ -1,46 +1,52 @@
-# 🔗 LinkMemory — Chrome History & Tracking Extension
+# 🔗 LinkMemory — Universal Content Memory Extension
 
-**LinkMemory** is a premium, high-performance, and privacy-first Google Chrome/Brave Extension built with MV3. Designed specifically for content readers, researchers, and community contributors, LinkMemory dynamically tracks, highlights, and filters your browsing history to deliver an uninterrupted, highly visual feed browsing experience.
+<p align="center">
+  <img src="icons/icon128.png" width="128" height="128" alt="LinkMemory Logo">
+</p>
 
-Instantly recognize previously read articles, manage lists, and dynamically hide clicked items to browse feeds without repeating clicks!
+**LinkMemory** is a premium, high-performance, and privacy-first Chromium-based browser extension built with MV3. It helps you remember content you have already seen by dynamically tracking visited pages, matching them in real-time using a **Dual-Matching Engine**, and visually marking them with a non-disruptive Red **`SEEN`** badge. 
+
+Whether you are browsing feeds on Medium, Substack, Hashnode, Dev.to, forums, or documentation portals, LinkMemory keeps you focused on unread content without altering page layouts or hiding posts.
+
+---
+
+## 🚀 Quick Download
+
+Get the extension instantly and run it locally:
+
+<p align="center">
+  <a href="https://github.com/0xrohitsen/LinkMemory/archive/refs/heads/main.zip" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/Download-LinkMemory%20ZIP-22c55e?style=for-the-badge&logo=github" alt="Download LinkMemory ZIP">
+  </a>
+</p>
 
 ---
 
 ## 🌟 Key Features
 
-1. **Vibrant Dual-Status Highlighting (Green, Red, Purple)**
-   * **Visited URLs only (Green `rgb(34, 197, 94)`)**: Renders a `VISITED` badge next to page links you've browsed.
-   * **Seen Titles only (Red `rgb(255, 59, 48)`)**: Renders a `SEEN` badge next to titles imported from external lists.
-   * **Dual Matching (Purple `rgb(168, 85, 247)`)**: Renders a combined `VISITED • SEEN` badge when a link has been imported AND clicked!
+1. **Dual Set-Based Matching Engine (O(1) Performance)**
+   * **URL Matching**: Checks if a link's destination URL has been visited. If yes, it marks it instantly.
+   * **Title Matching**: Checks if the link text matches a title in the database.
+   * **The Hybrid Advantage**: If *either* matches, you get the Red `SEEN` badge! This guarantees 100% matching accuracy even if feed grid titles differ slightly from the original page headings.
 
-2. **Bulk Title Paste Panel (New in V2.2)**
-   * A clean, collapsible accordion text panel. Paste raw article titles directly (one per line) from your browser history.
-   * Smart parser automatically filters out blank lines, trims spacing, and excludes structural table headers (like `"Title"` labels).
-   * Fully integrated with the database deduplication engine to skip duplicates, accompanied by real-time progress bar animations.
+2. **Automated History & Real-Time Auto-Save**
+   * LinkMemory monitors your standard navigations. When you visit a page, its URL and cleaned title are securely saved in a single, atomic storage transaction in the background.
 
-3. **Dynamic SPA Router Observer (Optimized for Modern SPAs)**
-   * Special MutationObserver monitors virtual Single Page Application (SPA) tab shifts (such as on `community.arc.io`), recording navigation logs automatically without full-page reloads.
+3. **Robust Brand Suffix Stripper**
+   * Automatically strips generic site name branding suffixes (like ` | Medium`, ` - YouTube`, or ` — Substack`) near the trailing end of document titles. This ensures title text in your feeds matches your history exactly!
 
-4. **Global Auto-Hide Visited Articles**
-   * Toggle **"Hide Visited Articles"** in the settings. Any article cards or links that have been visited or exist in your seen history are dynamically hidden (`display: none !important`) in real-time.
-   * Hides the *enclosing card container* (such as `<article>` elements or parent anchor `<a>` links) rather than just the heading text to maintain clean, seamless grid layouts.
+4. **Website Selection Scope Mode**
+   * **Mode A (Work on all websites)**: Execute globally across all browser tabs.
+   * **Mode B (Work only on selected websites)**: Restrict the extension to user-whitelisted domains only (supports subdomains natively).
 
-5. **Exclusions & Exceptions Whitelist**
-   * Manage exceptions directly in the popup. whitelisted pages bypass the auto-hide engine entirely.
-   * Pre-seeded with defaults like:
-     * `https://community.arc.io/home`
-     * `https://community.arc.io/home/contributors/my-contributions`
-   * Click **"+ Exclude Current Page"** or manually add paths to prevent structural feed columns from hiding.
+5. **Aesthetic Settings Tab Options Dashboard**
+   * A full-page, standalone Options panel to manage whitelists, clipboard bulk pasting (which ignores blank rows and `"Title"` headers), and high-volume CSV importing/exporting.
 
-6. **Dually Indexed Live Search**
-   * Instant search scans both URLs and Titles databases simultaneously, highlighting matches using `<mark>` tags and displaying custom status tags (Seen, Visited, or Both).
+6. **Desktop & Mobile Compatibility**
+   * Modern, lightweight dark-themed CSS viewport layout fully optimized for both desktop and mobile extension drawers, including **Kiwi Browser** and **Mises Browser** (Android).
 
-7. **Resilient CSV Importers & Exporters**
-   * Imports external read titles lists or URL browsing history CSV tables, dynamically resolving duplicates.
-   * Exports both databases cleanly to CSV files.
-
-8. **Privacy-First & Offline-First**
-   * 100% of data is stored client-side in the sandboxed local storage (`chrome.storage.local`). No external APIs, no trackers, and no server connections.
+7. **100% Privacy & Offline-First**
+   * Stored purely on your device inside `chrome.storage.local`. No trackers, no servers, no analytics, and no accounts required.
 
 ---
 
@@ -50,55 +56,77 @@ Instantly recognize previously read articles, manage lists, and dynamically hide
 LinkMemory/
 ├── manifest.json         # Extension MV3 declarations & permissions
 ├── background.js         # Service worker tracking installation details
-├── content.js            # Page auto-tracker, SPA observer, & visual badges
+├── content.js            # Page auto-tracker, SPA observer, & visual badging
 ├── popup.html            # Premium dashboard interface UI
 ├── popup.css             # Harmonious HSL styling & micro-animations
 ├── popup.js              # View controller managing state events & imports
-├── csv-import.js         # Joint parser for Title & URL CSV rows
+├── csv-import.js         # Joint parser for Title CSV rows
 ├── storage.js            # Promise-based local database manager
-├── utils.js              # High-fidelity URL & Title cleaning helpers
+├── utils.js              # High-fidelity URL normalizer & title cleaner
 └── icons/                # High-fidelity cropped brand icons
-    ├── icon16.png        # maximized 16x16 icon
-    ├── icon48.png        # maximized 48x48 icon
-    └── icon128.png       # maximized 128x128 icon
+    ├── icon16.png        # Maximized 16x16 icon (Toolbar)
+    ├── icon48.png        # Maximized 48x48 icon (Management)
+    └── icon128.png       # Maximized 128x128 icon (Store/Branding)
 ```
 
 ---
 
-## 🚀 Installation Guide (Developer Mode)
+## 🚀 How to Install
 
-As an open-source extension, you can easily load LinkMemory locally into any Chromium-based browser (Chrome, Brave, Edge, Opera, etc.):
-
-1. **Download / Clone** the repository:
-   ```bash
-   git clone https://github.com/0xrohitsen/LinkMemory.git
-   ```
+### 💻 On Desktop (Chrome, Brave, Edge, Arc)
+1. **Download and Extract** the ZIP:
+   * [Download LinkMemory ZIP](https://github.com/0xrohitsen/LinkMemory/archive/refs/heads/main.zip) and extract it to a folder on your computer.
 2. Open your browser and navigate to the Extensions page:
    * Chrome: `chrome://extensions/`
    * Brave: `brave://extensions/`
-3. In the top-right corner, switch the **"Developer mode"** toggle to **ON**.
+3. Toggle the **"Developer mode"** switch in the top-right corner to **ON**.
 4. In the top-left, click **"Load unpacked"**.
-5. Select the `LinkMemory` folder from your local disk.
-6. **That's it!** Pin the extension to your toolbar to access the dashboard.
+5. Select the extracted `LinkMemory` folder.
+6. **Done!** Pin the extension to your toolbar.
+
+### 📱 On Mobile (Kiwi Browser, Mises Browser)
+1. **Download** the ZIP:
+   * Open Kiwi/Mises on your Android device and download the [LinkMemory ZIP](https://github.com/0xrohitsen/LinkMemory/archive/refs/heads/main.zip).
+2. Open Extensions:
+   * Tap the three dots menu and select **Extensions**.
+3. Toggle **"Developer Mode"** to **ON**.
+4. Tap **"+ (from .zip/.crx/.user.js)"**.
+5. Select the downloaded ZIP file from your device files.
+6. LinkMemory will load instantly and works natively on mobile blogs and feeds!
 
 ---
 
 ## 📘 How to Use
 
-### 1. Clipboard Paste (Quick Import)
-1. Click **"Paste Titles"** in the popup to slide open the accordion text area.
-2. Paste any list of article titles (e.g., copied from your history or spreadsheet).
-3. Click **"Import Pasted Titles"**. The parser will deduplicate the list and notify you instantly.
+### 1. Dynamic Feed Marking
+Browse any feed page. As soon as you click a link and visit it, LinkMemory records it. When you return to the feed or go back in history, a Red **`SEEN`** badge will appear next to the visited post.
 
-### 2. Auto-Hiding Feeds
-1. Navigate to your favorite community feed page.
-2. Enable the **"Hide Visited Articles"** toggle in the popup.
-3. Any articles you have read or visited will fade out completely, keeping your dashboard clean and focused on unread content!
+### 2. bfcache (Back-Forward Cache) Support
+If you navigate back to a feed page using your browser's back button, LinkMemory automatically detects the bfcache restore and instantly re-scans the DOM to display your badges without requiring a manual page refresh.
 
-### 3. Adding Exceptions
-* If you are on a page where you *do not* want articles to hide (e.g., a home directory page), click **"+ Exclude Current Page"** in the popup exceptions area.
+### 3. Restricting Whitelist Domains (Mode B)
+1. Open the extension **Full Settings** options tab.
+2. Select **"Work only on selected websites"** under Website Scope.
+3. Input your desired hosts (e.g. `medium.com`, `hashnode.com`) and click **Add Website**. LinkMemory will run strictly on these platforms!
+
+### 4. Bulk Clipboard Imports
+Open the collapsible **"Paste Titles"** panel in the popup or go to the full settings dashboard, paste a raw list of titles copied from your history or spreadsheet, and hit **Save Titles**. They will instantly mark as seen!
 
 ---
 
-## 📜 License
-This project is open-source and licensed under the [MIT License](LICENSE).
+## 💖 Support & Donations
+
+If LinkMemory helps you organize your reading workflow and browse feeds more efficiently, consider supporting the project:
+
+### 🪙 Donate via EVM (Ethereum, BSC, Polygon, Optimism, Arbitrum, Base)
+<p align="center">
+  <code><b>0xe8B2e37feCE6E8BC0Ea3EF96c6d870F4F03B2Db7</b></b>
+</p>
+
+---
+
+## ✍️ Creator
+
+* **Build By**: [Rohit Sen (@ask_rohitsen)](https://x.com/ask_rohitsen) — feel free to reach out on X for questions, feedback, or collaborations!
+
+* **License**: Open-source under the [MIT License](LICENSE).
